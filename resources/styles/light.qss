@@ -1,0 +1,5 @@
+/* Light theme placeholder */
+QWidget { background: #f6f7fb; color: #1f1f27; font-size: 14px; }
+QPushButton { padding: 6px 12px; border-radius: 6px; background: #e2e6f0; }
+QPushButton:hover { background: #d6dcea; }
+QPushButton:pressed { background: #c6cee0; }

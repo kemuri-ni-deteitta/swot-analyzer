@@ -1,0 +1,125 @@
+.visualization-view {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.visualization-view h2 {
+  margin-bottom: var(--spacing-lg);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-secondary);
+}
+
+.empty-state p {
+  margin: var(--spacing-sm) 0;
+}
+
+.charts-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.chart-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+}
+
+.chart-card h3 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: var(--font-size-lg);
+  color: var(--text-primary);
+}
+
+.empty-chart {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.top-factors-section {
+  margin-top: var(--spacing-xl);
+}
+
+.top-factors-section h3 {
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-lg);
+}
+
+.top-factors-list {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  overflow-x: auto;
+}
+
+.top-factors-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.top-factors-table thead {
+  background-color: var(--bg-tertiary);
+}
+
+.top-factors-table th {
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.top-factors-table td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.top-factors-table tbody tr:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.top-factors-table .rank {
+  font-weight: 600;
+  color: var(--accent-color);
+  text-align: center;
+  width: 60px;
+}
+
+.top-factors-table .type {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.top-factors-table .text {
+  max-width: 400px;
+  word-wrap: break-word;
+}
+
+.top-factors-table .category {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.top-factors-table .score {
+  text-align: right;
+  font-size: var(--font-size-lg);
+  color: var(--accent-color);
+}
+
+.empty-message {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-tertiary);
+  font-style: italic;
+}

@@ -1,0 +1,210 @@
+.factors-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.factor-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.factor-form .form-row {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.factor-form label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.factor-form input,
+.factor-form select {
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: var(--control-height);
+}
+
+.factor-form input.error-input {
+  border: 2px solid var(--error-color);
+  background: var(--error-bg);
+}
+
+.factor-form .error-message {
+  color: var(--error-color);
+  font-size: var(--font-size-xs);
+  margin-top: 4px;
+  display: block;
+}
+
+.factor-form .flex-1 {
+  flex: 1;
+}
+
+.primary-btn {
+  background: var(--accent-color);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  height: var(--control-height);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.primary-btn:hover {
+  background: var(--accent-hover);
+}
+
+.factor-table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filters {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.filters label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.filters input,
+.filters select {
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: var(--control-height);
+}
+
+.table-head,
+.table-row {
+  display: grid;
+  grid-template-columns: 80px 120px 1fr 120px 120px 120px 100px 140px;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+.table-head {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.table-body {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+}
+
+.table-row {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  min-height: 56px;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-row.has-error {
+  background: var(--error-bg);
+  border-left: 4px solid var(--error-color);
+}
+
+.col.num input {
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.col.text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.col.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  align-items: flex-start;
+}
+
+.ghost {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ghost:hover {
+  background: var(--bg-secondary);
+}
+
+.ghost.danger {
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+.error-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.error-chip {
+  background: var(--error-bg);
+  color: var(--error-color);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  font-size: var(--font-size-xs);
+}
+
+.muted {
+  color: var(--text-tertiary);
+}
+
+.error-summary {
+  padding: var(--spacing-md);
+  border: 1px solid var(--error-color);
+  background: var(--error-bg);
+  color: var(--error-color);
+  border-radius: var(--radius-md);
+}

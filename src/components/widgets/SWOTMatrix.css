@@ -1,0 +1,119 @@
+.swot-matrix {
+  margin-bottom: var(--spacing-xl);
+}
+
+.swot-matrix h3 {
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-lg);
+}
+
+.matrix-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: var(--spacing-md);
+  min-height: 400px;
+}
+
+.quadrant {
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.quadrant-strengths {
+  background: linear-gradient(135deg, rgba(139, 69, 19, 0.1) 0%, rgba(160, 82, 45, 0.05) 100%);
+  border-color: #8b4513;
+}
+
+.quadrant-weaknesses {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 255, 0, 0.05) 100%);
+  border-color: #ffd700;
+}
+
+.quadrant-opportunities {
+  background: linear-gradient(135deg, rgba(0, 191, 255, 0.1) 0%, rgba(64, 224, 208, 0.05) 100%);
+  border-color: #00bfff;
+}
+
+.quadrant-threats {
+  background: linear-gradient(135deg, rgba(220, 20, 60, 0.1) 0%, rgba(255, 69, 0, 0.05) 100%);
+  border-color: #dc143c;
+}
+
+.quadrant-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.quadrant-label {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 32px;
+}
+
+.quadrant-title {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.quadrant-title-ru {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-left: auto;
+}
+
+.quadrant-total {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-sm);
+  text-align: center;
+  padding: var(--spacing-xs);
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-sm);
+}
+
+.quadrant-factors {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.quadrant-factors ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.quadrant-factors li {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  margin: var(--spacing-xs) 0;
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  border-left: 3px solid var(--accent-color);
+  cursor: help;
+}
+
+.quadrant-factors li:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.empty-quadrant {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  padding: var(--spacing-md);
+}

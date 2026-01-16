@@ -1,0 +1,432 @@
+.summary-view {
+  padding: var(--spacing-lg);
+  color: var(--text-primary);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.summary-view h2 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+}
+
+.export-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.export-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.export-btn:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  border-color: var(--accent-color);
+}
+
+.export-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.export-pdf {
+  border-color: #dc3545;
+}
+
+.export-pdf:hover:not(:disabled) {
+  background: rgba(220, 53, 69, 0.1);
+  border-color: #dc3545;
+}
+
+.export-word {
+  border-color: #2b579a;
+}
+
+.export-word:hover:not(:disabled) {
+  background: rgba(43, 87, 154, 0.1);
+  border-color: #2b579a;
+}
+
+.summary-section {
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.summary-section h3 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: var(--font-size-lg);
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: var(--spacing-xs);
+}
+
+/* Информация о проекте */
+.project-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.info-item {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.info-value {
+  color: var(--text-primary);
+}
+
+/* Статистика */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.summary-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.card-icon {
+  font-size: 2rem;
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.card-value {
+  font-size: var(--font-size-xl);
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.card-value.error {
+  color: var(--error-color);
+}
+
+/* Распределение по типам */
+.factor-types-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.factor-type-summary-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.type-badge {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: var(--font-size-lg);
+  color: #fff;
+}
+
+.type-badge.type-s {
+  background: #28a745;
+}
+
+.type-badge.type-w {
+  background: #ffc107;
+  color: #000;
+}
+
+.type-badge.type-o {
+  background: #17a2b8;
+}
+
+.type-badge.type-t {
+  background: #dc3545;
+}
+
+.type-name {
+  flex: 1;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.type-count {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.type-total {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* SWOT матрица */
+.swot-matrix-container {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-md);
+}
+
+/* Категории */
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.category-item {
+  display: grid;
+  grid-template-columns: 50px 1fr auto auto;
+  gap: var(--spacing-md);
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.category-rank {
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+.category-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.category-score {
+  font-weight: bold;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.category-count {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* Стратегии */
+.strategies-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.strategy-summary-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md);
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.strategy-summary-type {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: var(--font-size-lg);
+  color: #fff;
+  margin-bottom: var(--spacing-sm);
+}
+
+.strategy-summary-type.so {
+  background: #28a745;
+}
+
+.strategy-summary-type.wo {
+  background: #17a2b8;
+}
+
+.strategy-summary-type.st {
+  background: #ffc107;
+  color: #000;
+}
+
+.strategy-summary-type.wt {
+  background: #dc3545;
+}
+
+.strategy-summary-count {
+  font-size: var(--font-size-xl);
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.strategy-summary-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Топ факторы */
+.top-factors-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.top-factor-item {
+  display: grid;
+  grid-template-columns: 50px 180px 1fr 150px auto;
+  gap: var(--spacing-md);
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.factor-rank {
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+.factor-type-badge {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.factor-text {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.factor-category {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.factor-score-value {
+  font-weight: bold;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+/* Рекомендации */
+.recommendations {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.recommendation-item {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid;
+}
+
+.recommendation-item.warning {
+  background: var(--error-bg);
+  border-color: var(--error-color);
+}
+
+.recommendation-item.info {
+  background: var(--bg-tertiary);
+  border-color: var(--accent-color);
+}
+
+.recommendation-item.success {
+  background: rgba(40, 167, 69, 0.1);
+  border-color: var(--success-color);
+}
+
+.rec-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.rec-content {
+  flex: 1;
+}
+
+.rec-content strong {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-primary);
+}
+
+.rec-content p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+@media (max-width: 900px) {
+  .top-factor-item {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xs);
+  }
+
+  .category-item {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xs);
+  }
+
+  .info-item {
+    grid-template-columns: 1fr;
+  }
+}
