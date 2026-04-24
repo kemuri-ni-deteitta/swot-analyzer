@@ -94,15 +94,16 @@ export default function VisualizationView() {
         <div className="chart-card">
           <h3>Оценка по категориям</h3>
           {chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartData}>
+            <ResponsiveContainer width="100%" height={340}>
+              <BarChart data={chartData} margin={{ bottom: 10 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="category" 
-                  angle={0} 
-                  textAnchor="middle" 
-                  height={60}
+                <XAxis
+                  dataKey="category"
+                  angle={-35}
+                  textAnchor="end"
+                  height={90}
                   interval={0}
+                  tick={{ fontSize: 11 }}
                 />
                 <YAxis />
                 <Tooltip />

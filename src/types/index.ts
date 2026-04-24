@@ -7,7 +7,7 @@ export interface Factor {
   category: string
   significance: number // 1-5
   impact: number // 1-5
-  probability?: number // 1-5, required for O/T
+  probability?: number // 0-1, required for O/T
   score?: number // calculated
 }
 

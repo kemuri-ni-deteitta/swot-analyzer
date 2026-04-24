@@ -52,7 +52,7 @@ export const validationService = {
       })
     }
 
-    // probability обязательна для O/T и должна быть 1..5
+    // probability обязательна для O/T и должна быть 0..1
     if (factor.type === 'O' || factor.type === 'T') {
       if (factor.probability === undefined || factor.probability === null) {
         errors.push({
@@ -60,11 +60,11 @@ export const validationService = {
           field: 'probability',
           message: 'Вероятность обязательна для возможностей и угроз',
         })
-      } else if (factor.probability < 1 || factor.probability > 5) {
+      } else if (factor.probability < 0 || factor.probability > 1) {
         errors.push({
           factorId: factor.id,
           field: 'probability',
-          message: 'Вероятность должна быть от 1 до 5',
+          message: 'Вероятность должна быть от 0 до 1',
         })
       }
     }

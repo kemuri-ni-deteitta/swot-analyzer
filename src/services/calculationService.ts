@@ -15,7 +15,7 @@ export const calculationService = {
       } else {
         // O или T
         const probability = factor.probability ?? 1
-        score = factor.significance * factor.impact * probability
+        score = Math.round(factor.significance * factor.impact * probability * 100) / 100
       }
       
       return { ...factor, score }

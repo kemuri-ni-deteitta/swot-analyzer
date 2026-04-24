@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
+  height: 100%;
 }
 
 .factor-form {
@@ -64,6 +65,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  align-self: flex-end;
 }
 
 .primary-btn:hover {
@@ -74,6 +76,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .table-controls {
@@ -127,6 +132,9 @@
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   background: var(--bg-primary);
+  flex: 1;
+  min-height: 150px;
+  overflow: auto;
 }
 
 .table-row {

@@ -111,7 +111,7 @@ export function FactorTable({ factors, onUpdate, onDelete }: Props) {
         <div className="col actions">Действия</div>
       </div>
 
-      <div className="table-body" ref={parentRef} style={{ height: 420, overflow: 'auto' }}>
+      <div className="table-body" ref={parentRef}>
         <div
           style={{
             height: `${rowVirtualizer.getTotalSize()}px`,
@@ -163,14 +163,21 @@ export function FactorTable({ factors, onUpdate, onDelete }: Props) {
                   ) : (
                     <input
                       type="number"
-                      min={1}
-                      max={5}
+                      min={0}
+                      max={1}
+                      step={0.01}
                       value={factor.probability ?? ''}
-                      onChange={e =>
-                        onUpdate(factor.id, {
-                          probability: e.target.value ? Number(e.target.value) : undefined,
-                        })
-                      }
+                      onChange={e => {
+                        if (!e.target.value) {
+                          onUpdate(factor.id, { probability: undefined })
+                          return
+                        }
+                        let val = Number(e.target.value)
+                        if (val < 0) val = 0
+                        if (val > 1) val = 1
+                        val = Math.round(val * 100) / 100
+                        onUpdate(factor.id, { probability: val })
+                      }}
                     />
                   )}
                 </div>

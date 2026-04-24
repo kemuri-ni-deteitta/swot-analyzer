@@ -14,7 +14,7 @@ const defaultState = {
   category: '',
   significance: 3,
   impact: 3,
-  probability: 3,
+  probability: 0.5,
 }
 
 export function FactorForm({ onSubmit }: Props) {
@@ -53,8 +53,8 @@ export function FactorForm({ onSubmit }: Props) {
   }
 
   const update = <K extends keyof typeof state>(key: K, value: any) => {
-    // Ограничение для числовых полей 1-5
-    if (key === 'significance' || key === 'impact' || key === 'probability') {
+    // Ограничение для числовых полей significance/impact: 1-5
+    if (key === 'significance' || key === 'impact') {
       const numValue = Number(value)
       if (isNaN(numValue) || numValue < 1) {
         value = 1
@@ -62,6 +62,16 @@ export function FactorForm({ onSubmit }: Props) {
         value = 5
       } else {
         value = Math.round(numValue)
+      }
+    } else if (key === 'probability') {
+      // Ограничение для вероятности: 0-1, до 2 знаков после запятой
+      const numValue = Number(value)
+      if (isNaN(numValue) || numValue < 0) {
+        value = 0
+      } else if (numValue > 1) {
+        value = 1
+      } else {
+        value = Math.round(numValue * 100) / 100
       }
     }
     setState(prev => ({ ...prev, [key]: value }))
@@ -153,21 +163,14 @@ export function FactorForm({ onSubmit }: Props) {
 
         {(state.type === 'O' || state.type === 'T') && (
           <label>
-            Вероятность (1-5)
+            Вероятность (0-1)
             <input
               type="number"
-              min={1}
-              max={5}
+              min={0}
+              max={1}
+              step={0.01}
               value={state.probability}
               onChange={e => update('probability', e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key >= '0' && e.key <= '9') {
-                  const newValue = Number(String(state.probability) + e.key)
-                  if (newValue > 5) {
-                    e.preventDefault()
-                  }
-                }
-              }}
             />
           </label>
         )}
