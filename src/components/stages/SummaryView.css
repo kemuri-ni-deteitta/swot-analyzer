@@ -364,6 +364,42 @@
   text-align: right;
 }
 
+.interaction-summary {
+  margin-top: var(--spacing-md);
+}
+
+.interaction-summary h4 {
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.interaction-sums {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.interaction-sum-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+.sum-label {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  min-width: 3rem;
+}
+
+.sum-value {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
 /* Рекомендации */
 .recommendations {
   display: flex;

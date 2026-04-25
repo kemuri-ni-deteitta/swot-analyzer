@@ -1,40 +1,48 @@
 import { useMemo } from 'react'
-import { Factor } from '../../types'
+import { Factor, Interaction } from '../../types'
 import { calculationService } from '../../services/calculationService'
 import './SWOTMatrix.css'
 
 type Props = {
   factors: Factor[]
+  interactions?: Interaction[]
+  isSeminarMode?: boolean
 }
 
-export function SWOTMatrix({ factors }: Props) {
+export function SWOTMatrix({ factors, interactions = [], isSeminarMode = false }: Props) {
   const totals = useMemo(() => {
     return calculationService.calculateQuadrantTotals(factors)
   }, [factors])
 
-  const factorsByType = useMemo(() => {
-    return {
-      S: factors.filter(f => f.type === 'S'),
-      W: factors.filter(f => f.type === 'W'),
-      O: factors.filter(f => f.type === 'O'),
-      T: factors.filter(f => f.type === 'T'),
-    }
-  }, [factors])
+  const interactionTotals = useMemo(() => {
+    if (!isSeminarMode) return null
+    return calculationService.calculateInteractionTotals(factors, interactions)
+  }, [factors, interactions, isSeminarMode])
 
-  const topFactorsByType = useMemo(() => {
-    return {
-      S: calculationService.getTopFactors(factorsByType.S, 3),
-      W: calculationService.getTopFactors(factorsByType.W, 3),
-      O: calculationService.getTopFactors(factorsByType.O, 3),
-      T: calculationService.getTopFactors(factorsByType.T, 3),
-    }
-  }, [factorsByType])
+  const factorsByType = useMemo(() => ({
+    S: factors.filter(f => f.type === 'S'),
+    W: factors.filter(f => f.type === 'W'),
+    O: factors.filter(f => f.type === 'O'),
+    T: factors.filter(f => f.type === 'T'),
+  }), [factors])
+
+  const topFactorsByType = useMemo(() => ({
+    S: calculationService.getTopFactors(factorsByType.S, 3),
+    W: calculationService.getTopFactors(factorsByType.W, 3),
+    O: calculationService.getTopFactors(factorsByType.O, 3),
+    T: calculationService.getTopFactors(factorsByType.T, 3),
+  }), [factorsByType])
 
   return (
     <div className="swot-matrix">
       <h3>SWOT Матрица</h3>
+      {isSeminarMode && interactionTotals && (
+        <div className="quadrant-interaction-totals">
+          <span className="qi-item so">SO: {interactionTotals.SO.toFixed(2)}</span>
+          <span className="qi-item wt">WT: {interactionTotals.WT.toFixed(2)}</span>
+        </div>
+      )}
       <div className="matrix-grid">
-        {/* Верхний ряд */}
         <div className="quadrant quadrant-strengths">
           <div className="quadrant-header">
             <span className="quadrant-label">S</span>
@@ -44,16 +52,8 @@ export function SWOTMatrix({ factors }: Props) {
           <div className="quadrant-total">Σ = {totals.S.toFixed(1)}</div>
           <div className="quadrant-factors">
             {topFactorsByType.S.length > 0 ? (
-              <ul>
-                {topFactorsByType.S.map(factor => (
-                  <li key={factor.id} title={`Оценка: ${factor.score?.toFixed(1)}`}>
-                    {factor.text}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="empty-quadrant">Нет факторов</p>
-            )}
+              <ul>{topFactorsByType.S.map(f => <li key={f.id} title={`Оценка: ${f.score?.toFixed(2)}`}>{f.text}</li>)}</ul>
+            ) : <p className="empty-quadrant">Нет факторов</p>}
           </div>
         </div>
 
@@ -66,20 +66,11 @@ export function SWOTMatrix({ factors }: Props) {
           <div className="quadrant-total">Σ = {totals.W.toFixed(1)}</div>
           <div className="quadrant-factors">
             {topFactorsByType.W.length > 0 ? (
-              <ul>
-                {topFactorsByType.W.map(factor => (
-                  <li key={factor.id} title={`Оценка: ${factor.score?.toFixed(1)}`}>
-                    {factor.text}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="empty-quadrant">Нет факторов</p>
-            )}
+              <ul>{topFactorsByType.W.map(f => <li key={f.id} title={`Оценка: ${f.score?.toFixed(2)}`}>{f.text}</li>)}</ul>
+            ) : <p className="empty-quadrant">Нет факторов</p>}
           </div>
         </div>
 
-        {/* Нижний ряд */}
         <div className="quadrant quadrant-opportunities">
           <div className="quadrant-header">
             <span className="quadrant-label">O</span>
@@ -89,16 +80,8 @@ export function SWOTMatrix({ factors }: Props) {
           <div className="quadrant-total">Σ = {totals.O.toFixed(1)}</div>
           <div className="quadrant-factors">
             {topFactorsByType.O.length > 0 ? (
-              <ul>
-                {topFactorsByType.O.map(factor => (
-                  <li key={factor.id} title={`Оценка: ${factor.score?.toFixed(1)}`}>
-                    {factor.text}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="empty-quadrant">Нет факторов</p>
-            )}
+              <ul>{topFactorsByType.O.map(f => <li key={f.id} title={`Оценка: ${f.score?.toFixed(2)}`}>{f.text}</li>)}</ul>
+            ) : <p className="empty-quadrant">Нет факторов</p>}
           </div>
         </div>
 
@@ -111,16 +94,8 @@ export function SWOTMatrix({ factors }: Props) {
           <div className="quadrant-total">Σ = {totals.T.toFixed(1)}</div>
           <div className="quadrant-factors">
             {topFactorsByType.T.length > 0 ? (
-              <ul>
-                {topFactorsByType.T.map(factor => (
-                  <li key={factor.id} title={`Оценка: ${factor.score?.toFixed(1)}`}>
-                    {factor.text}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="empty-quadrant">Нет факторов</p>
-            )}
+              <ul>{topFactorsByType.T.map(f => <li key={f.id} title={`Оценка: ${f.score?.toFixed(2)}`}>{f.text}</li>)}</ul>
+            ) : <p className="empty-quadrant">Нет факторов</p>}
           </div>
         </div>
       </div>

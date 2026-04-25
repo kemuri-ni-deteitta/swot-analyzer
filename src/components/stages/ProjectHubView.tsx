@@ -12,80 +12,39 @@ export default function ProjectHubView() {
   const [newProjectDescription, setNewProjectDescription] = useState('')
   const [descriptionError, setDescriptionError] = useState(false)
 
-  useEffect(() => {
-    // Проверяем доступность API при монтировании
-    console.log('ProjectHubView mounted')
-    console.log('window.electronAPI available:', typeof window.electronAPI !== 'undefined')
-    if (window.electronAPI) {
-      console.log('electronAPI methods:', Object.keys(window.electronAPI))
-    }
-    loadProjects()
-  }, [])
+  useEffect(() => { loadProjects() }, [])
 
   const loadProjects = async () => {
     setLoading(true)
     try {
-      console.log('Loading projects...')
-      if (!window.electronAPI) {
-        console.warn('Electron API not available')
-        setProjects([])
-        setLoading(false)
-        return
-      }
-      
-      const loadedProjects = await storageService.loadProjects()
-      console.log('Loaded projects:', loadedProjects)
-      setProjects(loadedProjects)
-    } catch (error) {
-      console.error('Error loading projects:', error)
-      setProjects([])
-    } finally {
-      setLoading(false)
-    }
+      if (!window.electronAPI) { setProjects([]); setLoading(false); return }
+      const loaded = await storageService.loadProjects()
+      setProjects(loaded)
+    } catch { setProjects([]) } finally { setLoading(false) }
   }
 
   const handleCreateProject = async () => {
-    if (!newProjectName.trim()) {
-      alert('Введите название проекта')
-      return
-    }
-
+    if (!newProjectName.trim()) { alert('Введите название проекта'); return }
     if (!newProjectDescription.trim()) {
       setDescriptionError(true)
       setTimeout(() => setDescriptionError(false), 3000)
       return
     }
-
-    try {
-      console.log('Creating project:', newProjectName.trim())
-      
-      // Проверяем доступность Electron API
-      if (!window.electronAPI) {
-        console.error('Electron API not available!')
-        alert('Ошибка: Electron API недоступен. Убедитесь, что приложение запущено через Electron.')
-        return
-      }
-
-      const project = storageService.createProject(newProjectName.trim(), newProjectDescription.trim())
-      console.log('Project created:', project)
-      
-      const saved = await storageService.saveProject(project)
-      console.log('Save result:', saved)
-      
-      if (saved) {
-        setNewProjectName('')
-        setNewProjectDescription('')
-        setDescriptionError(false)
-        await loadProjects()
-        await setCurrentProject(project)
-        setCurrentStage(1)
-      } else {
-        alert('Не удалось сохранить проект. Проверьте консоль для деталей.')
-      }
-    } catch (error) {
-      console.error('Error creating project:', error)
-      const message = error instanceof Error ? error.message : 'Неизвестная ошибка'
-      alert(`Ошибка при создании проекта: ${message}`)
+    if (!window.electronAPI) {
+      alert('Ошибка: Electron API недоступен.')
+      return
+    }
+    const project = storageService.createProject(newProjectName.trim(), newProjectDescription.trim())
+    const saved = await storageService.saveProject(project)
+    if (saved) {
+      setNewProjectName('')
+      setNewProjectDescription('')
+      setDescriptionError(false)
+      await loadProjects()
+      await setCurrentProject(project)
+      setCurrentStage(1)
+    } else {
+      alert('Не удалось сохранить проект.')
     }
   }
 
@@ -105,7 +64,7 @@ export default function ProjectHubView() {
   return (
     <div className="project-hub">
       <h2>Проекты SWOT-анализа</h2>
-      
+
       <div className="create-project">
         <div className="create-project-fields">
           <div className="field-group">
@@ -113,8 +72,8 @@ export default function ProjectHubView() {
               type="text"
               placeholder="Название нового проекта"
               value={newProjectName}
-              onChange={(e) => setNewProjectName(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleCreateProject()}
+              onChange={e => setNewProjectName(e.target.value)}
+              onKeyPress={e => e.key === 'Enter' && handleCreateProject()}
               className="project-name-input"
             />
           </div>
@@ -122,28 +81,15 @@ export default function ProjectHubView() {
             <textarea
               placeholder="Описание проекта"
               value={newProjectDescription}
-              onChange={(e) => {
-                setNewProjectDescription(e.target.value)
-                if (e.target.value.trim()) {
-                  setDescriptionError(false)
-                }
-              }}
-              onBlur={() => {
-                if (!newProjectDescription.trim()) {
-                  setDescriptionError(true)
-                }
-              }}
+              onChange={e => { setNewProjectDescription(e.target.value); if (e.target.value.trim()) setDescriptionError(false) }}
+              onBlur={() => { if (!newProjectDescription.trim()) setDescriptionError(true) }}
               className={`project-description-input ${descriptionError ? 'error-input' : ''}`}
               rows={3}
             />
-            {descriptionError && (
-              <span className="error-message">⚠️ Необходимо ввести описание проекта</span>
-            )}
+            {descriptionError && <span className="error-message">⚠️ Необходимо ввести описание проекта</span>}
           </div>
         </div>
-        <button onClick={handleCreateProject} className="create-button">
-          Создать проект
-        </button>
+        <button onClick={handleCreateProject} className="create-button">Создать проект</button>
       </div>
 
       {loading ? (
@@ -151,30 +97,28 @@ export default function ProjectHubView() {
       ) : projects.length === 0 ? (
         <div className="empty-state">
           <p>Нет сохранённых проектов</p>
-          <p className="hint">Создайте новый проект, чтобы начать SWOT-анализ</p>
+          <p className="hint">Создайте новый проект выше</p>
         </div>
       ) : (
         <div className="projects-grid">
-          {projects.map((project: Project) => (
-            <div
-              key={project.id}
-              className="project-card"
-              onClick={() => handleOpenProject(project)}
-            >
-              <h3>{project.name}</h3>
-              {project.description && <p>{project.description}</p>}
-              <div className="project-meta">
-                <span>Факторов: {project.factors.length}</span>
-                <span>Стратегий: {project.strategies.length}</span>
+          {projects.map(project => {
+            const totalFactors = project.calculations.reduce((s, c) => s + c.factors.length, 0)
+            const totalStrategies = project.calculations.reduce((s, c) => s + c.strategies.length, 0)
+            return (
+              <div key={project.id} className="project-card" onClick={() => handleOpenProject(project)}>
+                <h3>{project.name}</h3>
+                {project.description && <p>{project.description}</p>}
+                <div className="project-meta">
+                  <span>Расчётов: {project.calculations.length}</span>
+                  <span>Факторов: {totalFactors}</span>
+                  <span>Стратегий: {totalStrategies}</span>
+                </div>
+                <button className="delete-button" onClick={e => handleDeleteProject(project.id, e)}>
+                  Удалить
+                </button>
               </div>
-              <button
-                className="delete-button"
-                onClick={(e) => handleDeleteProject(project.id, e)}
-              >
-                Удалить
-              </button>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>

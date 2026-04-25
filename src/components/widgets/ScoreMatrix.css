@@ -1,0 +1,111 @@
+.score-matrix-block {
+  margin-bottom: var(--spacing-xl);
+}
+
+.score-matrix-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--text-primary);
+}
+
+.score-matrix-formula {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-sm) 0;
+  font-style: italic;
+}
+
+.score-matrix-warning {
+  font-size: var(--font-size-sm);
+  color: var(--error-color);
+  margin: 0 0 var(--spacing-sm) 0;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--error-bg);
+  border-radius: var(--radius-sm);
+}
+
+.score-matrix-scroll,
+.score-heatmap-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.score-matrix-table,
+.score-heatmap-table {
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.score-matrix-table th,
+.score-matrix-table td,
+.score-heatmap-table th,
+.score-heatmap-table td {
+  border: 1px solid var(--border-color);
+  padding: 5px 10px;
+  text-align: center;
+}
+
+.sm-corner {
+  background: var(--bg-tertiary);
+  min-width: 60px;
+  font-weight: 600;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.sm-ai-col,
+.sm-ext-header {
+  background: var(--bg-tertiary);
+  font-weight: 600;
+  min-width: 72px;
+  color: var(--text-primary);
+}
+
+.sm-helper-row td {
+  background: var(--bg-secondary);
+  font-size: var(--font-size-xs);
+}
+
+.sm-helper-label {
+  font-style: italic;
+  color: var(--text-secondary);
+  background: var(--bg-tertiary) !important;
+}
+
+.sm-helper-dash {
+  color: var(--text-secondary);
+}
+
+.sm-helper-val {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.sm-row-label {
+  background: var(--bg-tertiary);
+  font-weight: 600;
+  min-width: 52px;
+  color: var(--text-primary);
+}
+
+.sm-ai-cell {
+  background: var(--bg-secondary);
+  min-width: 52px;
+  color: var(--text-primary);
+}
+
+.sm-data-cell {
+  background: var(--bg-primary);
+  min-width: 72px;
+  color: var(--text-primary);
+}
+
+.sm-heat-cell {
+  min-width: 72px;
+  font-weight: 600;
+  font-size: var(--font-size-xs);
+}

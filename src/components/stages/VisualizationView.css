@@ -17,6 +17,32 @@
   margin: var(--spacing-sm) 0;
 }
 
+.score-matrices-section {
+  margin: var(--spacing-xl) 0;
+  padding: var(--spacing-lg);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.score-matrices-section h3 {
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: var(--font-size-lg);
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: var(--spacing-xs);
+}
+
+.matrix-unavailable {
+  padding: var(--spacing-md);
+  color: var(--text-secondary);
+  background: var(--bg-primary);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
 .charts-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));

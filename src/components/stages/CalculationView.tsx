@@ -1,75 +1,129 @@
+import { useMemo } from 'react'
 import { useProjectStore } from '../../store/useProjectStore'
+import { calculationService } from '../../services/calculationService'
+import { getAllProfiles } from '../../services/formulaProfiles'
 import './CalculationView.css'
 
 export default function CalculationView() {
-  const { currentProject } = useProjectStore()
-  const factors = currentProject?.factors ?? []
+  const { currentProject, currentCalculation } = useProjectStore()
 
-  if (!currentProject) {
+  if (!currentProject || !currentCalculation) {
     return (
       <div className="calculation-view">
-        <h2>Расчёт и проверка</h2>
-        <p>Выберите или создайте проект на этапе 0 (Project Hub).</p>
+        <h2>Взаимодействия</h2>
+        <p>Выберите расчёт на этапе «Расчёты».</p>
       </div>
     )
   }
 
+  const { factors, interactions, formulaProfileSnapshot: snapshot } = currentCalculation
+  const allProfiles = getAllProfiles(currentProject.formulaProfiles ?? [])
+  const profile = allProfiles.find(p => p.id === currentCalculation.formulaProfileId) ?? snapshot
+  const isSeminarMode = profile.mode === 'seminar' ||
+    (profile.mode === 'custom' && !!profile.interactionExpression)
+
+  const interactionTotals = useMemo(() => {
+    return calculationService.calculateInteractionTotals(factors, interactions)
+  }, [factors, interactions])
+
+  const quadrantTotals = useMemo(() => {
+    return calculationService.calculateQuadrantTotals(factors)
+  }, [factors])
+
+  const QUADRANT_META = {
+    S: { name: 'Сильные стороны' },
+    W: { name: 'Слабые стороны' },
+    O: { name: 'Возможности' },
+    T: { name: 'Угрозы' },
+  } as const
 
   return (
     <div className="calculation-view">
-      <h2>Расчёт и проверка</h2>
+      <h2>Взаимодействия — {currentCalculation.name}</h2>
+      <p className="calc-formula-label">
+        Формула: <strong>{profile.name}</strong>
+      </p>
 
-      <div className="calculation-summary">
-        <div className="summary-card">
-          <h3>Статистика</h3>
-          <p>Всего факторов: <strong>{factors.length}</strong></p>
-        </div>
-
-        <div className="summary-card">
-          <h3>Типы факторов</h3>
-          <div className="factor-types-list">
-            <div className="factor-type-item">
-              <span className="type-label">S</span>
-              <span className="type-description">(Strength / Сильные стороны)</span>
-              <span className="type-count">
-                {factors.filter(f => f.type === 'S').length}
-              </span>
+      <div className="quadrant-cards">
+        {(['S', 'W', 'O', 'T'] as const).map(t => (
+          <div key={t} className={`quadrant-stat-card quadrant-stat-card--${t.toLowerCase()}`}>
+            <div className="qsc-header">
+              <span className="qsc-badge">{t}</span>
+              <span className="qsc-name">{QUADRANT_META[t].name}</span>
             </div>
-            <div className="factor-type-item">
-              <span className="type-label">W</span>
-              <span className="type-description">(Weakness / Слабые стороны)</span>
-              <span className="type-count">
-                {factors.filter(f => f.type === 'W').length}
-              </span>
+            <div className="qsc-row">
+              <span className="qsc-row-label">Количество:</span>
+              <span className="qsc-row-value">{factors.filter(f => f.type === t).length}</span>
             </div>
-            <div className="factor-type-item">
-              <span className="type-label">O</span>
-              <span className="type-description">(Opportunity / Возможности)</span>
-              <span className="type-count">
-                {factors.filter(f => f.type === 'O').length}
-              </span>
-            </div>
-            <div className="factor-type-item">
-              <span className="type-label">T</span>
-              <span className="type-description">(Threat / Угрозы)</span>
-              <span className="type-count">
-                {factors.filter(f => f.type === 'T').length}
-              </span>
-            </div>
+            {!isSeminarMode && (
+              <div className="qsc-row">
+                <span className="qsc-row-label">Сумма:</span>
+                <span className="qsc-row-value qsc-row-value--sum">{quadrantTotals[t].toFixed(1)}</span>
+              </div>
+            )}
           </div>
-        </div>
+        ))}
       </div>
 
       {factors.length > 0 && (
-        <div className="success-message">
-          ✅ Все факторы готовы! Можно переходить к следующему этапу.
+        <div className="quadrant-bar-chart">
+          {(() => {
+            const entries = (['S', 'W', 'O', 'T'] as const).map(t => ({
+              t,
+              value: isSeminarMode
+                ? factors.filter(f => f.type === t).length
+                : quadrantTotals[t],
+            }))
+            const max = Math.max(...entries.map(e => e.value), 1)
+            return entries.map(({ t, value }) => (
+              <div key={t} className="qbc-row">
+                <span className="qbc-label">{t}</span>
+                <div className="qbc-track">
+                  <div
+                    className={`qbc-bar qbc-bar--${t.toLowerCase()}`}
+                    style={{ width: `${(value / max) * 100}%` }}
+                  />
+                </div>
+                <span className="qbc-value">
+                  {isSeminarMode ? value : value.toFixed(1)}
+                </span>
+              </div>
+            ))
+          })()}
+        </div>
+      )}
+
+      {isSeminarMode && (
+        <div className="summary-card">
+          <h3>Суммы взаимодействий</h3>
+          <div className="interaction-totals">
+            {(['SO', 'WT'] as const).map(q => (
+              <div key={q} className="interaction-total-item">
+                <span className="quadrant-label">{q}</span>
+                <span className="quadrant-value">{interactionTotals[q].toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {!isSeminarMode && (
+        <div className="simplified-notice">
+          <p>
+            В расширенном режиме оценки рассчитываются индивидуально для каждого фактора.
+            Матрица взаимодействий не используется.
+          </p>
+          {factors.length > 0 && (
+            <div className="success-message">
+              ✅ Оценки рассчитаны. Можно переходить к визуализации.
+            </div>
+          )}
         </div>
       )}
 
       {factors.length === 0 && (
         <div className="empty-message">
-          <p>Нет факторов для проверки.</p>
-          <p>Вернитесь на этап 1 и добавьте факторы.</p>
+          <p>Нет факторов. Вернитесь на этап «Ввод факторов».</p>
         </div>
       )}
     </div>

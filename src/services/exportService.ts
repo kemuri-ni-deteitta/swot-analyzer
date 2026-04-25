@@ -1,4 +1,4 @@
-import { Project } from '../types'
+import { Project, Calculation } from '../types'
 import { calculationService } from './calculationService'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
@@ -12,35 +12,30 @@ const escapeHtml = (text: string): string => {
 }
 
 export const exportService = {
-  /**
-   * Экспортирует проект в PDF с поддержкой кириллицы
-   */
-  async exportToPDF(project: Project): Promise<Blob> {
-    // Создаём HTML контент для правильной поддержки кириллицы
-    const quadrantTotals = calculationService.calculateQuadrantTotals(project.factors)
+  async exportToPDF(project: Project, calculation: Calculation): Promise<Blob> {
+    const factors = calculation.factors
+    const strategies = calculation.strategies
+    const profile = calculation.formulaProfileSnapshot
+    const quadrantTotals = calculationService.calculateQuadrantTotals(factors)
     const factorTypeCounts = {
-      S: project.factors.filter(f => f.type === 'S').length,
-      W: project.factors.filter(f => f.type === 'W').length,
-      O: project.factors.filter(f => f.type === 'O').length,
-      T: project.factors.filter(f => f.type === 'T').length,
+      S: factors.filter(f => f.type === 'S').length,
+      W: factors.filter(f => f.type === 'W').length,
+      O: factors.filter(f => f.type === 'O').length,
+      T: factors.filter(f => f.type === 'T').length,
     }
-    const topFactors = calculationService.getTopFactors(project.factors, 10)
+    const topFactors = calculationService.getTopFactors(factors, 10)
     const groupedStrategies = {
-      SO: project.strategies.filter(s => s.type === 'SO'),
-      WO: project.strategies.filter(s => s.type === 'WO'),
-      ST: project.strategies.filter(s => s.type === 'ST'),
-      WT: project.strategies.filter(s => s.type === 'WT'),
+      SO: strategies.filter(s => s.type === 'SO'),
+      WO: strategies.filter(s => s.type === 'WO'),
+      ST: strategies.filter(s => s.type === 'ST'),
+      WT: strategies.filter(s => s.type === 'WT'),
     }
 
     const createdAt = new Date(project.createdAt).toLocaleDateString('ru-RU', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+      year: 'numeric', month: 'long', day: 'numeric',
     })
-    const updatedAt = new Date(project.updatedAt).toLocaleDateString('ru-RU', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    const updatedAt = new Date(calculation.updatedAt).toLocaleDateString('ru-RU', {
+      year: 'numeric', month: 'long', day: 'numeric',
     })
 
     let htmlContent = `
@@ -145,14 +140,16 @@ export const exportService = {
         <div class="project-info">
           <div class="info-item"><strong>Проект:</strong> ${escapeHtml(project.name)}</div>
           ${project.description ? `<div class="info-item"><strong>Описание:</strong> ${escapeHtml(project.description)}</div>` : ''}
+          <div class="info-item"><strong>Расчёт:</strong> ${escapeHtml(calculation.name)}</div>
+          <div class="info-item"><strong>Формула:</strong> ${escapeHtml(profile.name)}</div>
           <div class="info-item"><strong>Создан:</strong> ${createdAt}</div>
           <div class="info-item"><strong>Обновлён:</strong> ${updatedAt}</div>
         </div>
 
         <h2>Статистика</h2>
         <div class="stats">
-          <div class="stat-item"><strong>Всего факторов:</strong> ${project.factors.length}</div>
-          <div class="stat-item"><strong>Стратегий:</strong> ${project.strategies.length}</div>
+          <div class="stat-item"><strong>Всего факторов:</strong> ${factors.length}</div>
+          <div class="stat-item"><strong>Стратегий:</strong> ${strategies.length}</div>
         </div>
 
         <h2>Распределение факторов по типам</h2>
@@ -206,7 +203,7 @@ export const exportService = {
     }
 
     // Стратегии
-    if (project.strategies.length > 0) {
+    if (strategies.length > 0) {
       htmlContent += `<h2>Сгенерированные стратегии</h2>`
       
       Object.entries(groupedStrategies).forEach(([type, strategies]) => {
@@ -300,10 +297,7 @@ export const exportService = {
     }
   },
 
-  /**
-   * Экспортирует проект в Word
-   */
-  async exportToWord(project: Project): Promise<Blob> {
+  async exportToWord(project: Project, calculation: Calculation): Promise<Blob> {
     const children: (Paragraph | Table)[] = []
 
     // Заголовок
@@ -324,29 +318,21 @@ export const exportService = {
     )
 
     if (project.description) {
-      children.push(
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: `Описание: ${project.description}`,
-            }),
-          ],
-        })
-      )
+      children.push(new Paragraph({ children: [new TextRun({ text: `Описание: ${project.description}` })] }))
     }
 
     children.push(new Paragraph({ text: '' }))
 
-    // Информация о проекте
-    children.push(
-      new Paragraph({
-        text: 'Информация о проекте',
-        heading: HeadingLevel.HEADING_2,
-      })
-    )
+    children.push(new Paragraph({ text: 'Информация о проекте и расчёте', heading: HeadingLevel.HEADING_2 }))
 
     const createdAt = new Date(project.createdAt).toLocaleDateString('ru-RU')
-    const updatedAt = new Date(project.updatedAt).toLocaleDateString('ru-RU')
+    const updatedAt = new Date(calculation.updatedAt).toLocaleDateString('ru-RU')
+    const profile = calculation.formulaProfileSnapshot
+    const factors = calculation.factors
+    const strategies = calculation.strategies
+
+    children.push(new Paragraph({ children: [new TextRun({ text: `Расчёт: ${calculation.name}` })] }))
+    children.push(new Paragraph({ children: [new TextRun({ text: `Формула: ${profile.name}` })] }))
     
     children.push(
       new Paragraph({
@@ -378,89 +364,29 @@ export const exportService = {
       })
     )
 
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: `Всего факторов: ${project.factors.length}`,
-          }),
-        ],
-      })
-    )
-
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: `Стратегий: ${project.strategies.length}`,
-          }),
-        ],
-      })
-    )
+    children.push(new Paragraph({ children: [new TextRun({ text: `Всего факторов: ${factors.length}` })] }))
+    children.push(new Paragraph({ children: [new TextRun({ text: `Стратегий: ${strategies.length}` })] }))
 
     children.push(new Paragraph({ text: '' }))
 
-    // Распределение по типам
-    const quadrantTotals = calculationService.calculateQuadrantTotals(project.factors)
-    children.push(
-      new Paragraph({
-        text: 'Распределение факторов по типам',
-        heading: HeadingLevel.HEADING_2,
-      })
-    )
-
+    const quadrantTotals = calculationService.calculateQuadrantTotals(factors)
+    children.push(new Paragraph({ text: 'Распределение факторов по типам', heading: HeadingLevel.HEADING_2 }))
     const factorTypeCounts = {
-      S: project.factors.filter(f => f.type === 'S').length,
-      W: project.factors.filter(f => f.type === 'W').length,
-      O: project.factors.filter(f => f.type === 'O').length,
-      T: project.factors.filter(f => f.type === 'T').length,
+      S: factors.filter(f => f.type === 'S').length,
+      W: factors.filter(f => f.type === 'W').length,
+      O: factors.filter(f => f.type === 'O').length,
+      T: factors.filter(f => f.type === 'T').length,
     }
-
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: `S (Сильные стороны): ${factorTypeCounts.S} (${quadrantTotals.S.toFixed(1)})`,
-          }),
-        ],
-      })
-    )
-
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: `W (Слабые стороны): ${factorTypeCounts.W} (${quadrantTotals.W.toFixed(1)})`,
-          }),
-        ],
-      })
-    )
-
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: `O (Возможности): ${factorTypeCounts.O} (${quadrantTotals.O.toFixed(1)})`,
-          }),
-        ],
-      })
-    )
-
-    children.push(
-      new Paragraph({
-        children: [
-          new TextRun({
-            text: `T (Угрозы): ${factorTypeCounts.T} (${quadrantTotals.T.toFixed(1)})`,
-          }),
-        ],
-      })
-    )
+    children.push(new Paragraph({ children: [new TextRun({ text: `S (Сильные стороны): ${factorTypeCounts.S} (${quadrantTotals.S.toFixed(1)})` })] }))
+    children.push(new Paragraph({ children: [new TextRun({ text: `W (Слабые стороны): ${factorTypeCounts.W} (${quadrantTotals.W.toFixed(1)})` })] }))
+    children.push(new Paragraph({ children: [new TextRun({ text: `O (Возможности): ${factorTypeCounts.O} (${quadrantTotals.O.toFixed(1)})` })] }))
+    children.push(new Paragraph({ children: [new TextRun({ text: `T (Угрозы): ${factorTypeCounts.T} (${quadrantTotals.T.toFixed(1)})` })] }))
 
     children.push(new Paragraph({ text: '' }))
 
     // Топ факторы
-    if (project.factors.length > 0) {
-      const topFactors = calculationService.getTopFactors(project.factors, 10)
+    if (factors.length > 0) {
+      const topFactors = calculationService.getTopFactors(factors, 10)
       
       children.push(
         new Paragraph({
@@ -560,19 +486,13 @@ export const exportService = {
     }
 
     // Стратегии
-    if (project.strategies.length > 0) {
-      children.push(
-        new Paragraph({
-          text: 'Сгенерированные стратегии',
-          heading: HeadingLevel.HEADING_2,
-        })
-      )
-
+    if (strategies.length > 0) {
+      children.push(new Paragraph({ text: 'Сгенерированные стратегии', heading: HeadingLevel.HEADING_2 }))
       const groupedStrategies = {
-        SO: project.strategies.filter(s => s.type === 'SO'),
-        WO: project.strategies.filter(s => s.type === 'WO'),
-        ST: project.strategies.filter(s => s.type === 'ST'),
-        WT: project.strategies.filter(s => s.type === 'WT'),
+        SO: strategies.filter(s => s.type === 'SO'),
+        WO: strategies.filter(s => s.type === 'WO'),
+        ST: strategies.filter(s => s.type === 'ST'),
+        WT: strategies.filter(s => s.type === 'WT'),
       }
 
       Object.entries(groupedStrategies).forEach(([type, strategies]) => {

@@ -4,33 +4,43 @@ import { FactorTable } from '../widgets/FactorTable'
 import './FactorsInputView.css'
 
 export default function FactorsInputView() {
-  const { currentProject, addFactor, updateFactor, deleteFactor } = useProjectStore()
-  const factors = currentProject?.factors ?? []
+  const { currentProject, currentCalculation, addFactor, updateFactor, deleteFactor, setShowFormulaEditor } = useProjectStore()
 
-  if (!currentProject) {
+  if (!currentProject || !currentCalculation) {
     return (
       <div className="factors-view">
         <h2>Ввод факторов</h2>
-        <p>Выберите или создайте проект на этапе 0 (Project Hub).</p>
+        <p>Выберите расчёт на этапе «Расчёты».</p>
       </div>
     )
   }
 
+  const profile = currentCalculation.formulaProfileSnapshot
+  const factors = currentCalculation.factors
+
   return (
     <div className="factors-view">
+      <div className="factors-header">
         <div>
-          <h2>Ввод факторов</h2>
-          <p>Добавляйте и редактируйте факторы. Ошибочные строки подсвечиваются.</p>
+          <h2>Ввод факторов — {currentCalculation.name}</h2>
+          <p>
+            Активная формула: <strong>{profile.name}</strong>
+          </p>
         </div>
+        <button className="ghost-btn" onClick={() => setShowFormulaEditor(true)}>
+          Редактировать формулы
+        </button>
+      </div>
 
-        <FactorForm onSubmit={addFactor} />
+      <FactorForm onSubmit={addFactor} profile={profile} />
 
-        <FactorTable
-          factors={factors}
-          errors={{}}
-          onUpdate={updateFactor}
-          onDelete={deleteFactor}
-        />
+      <FactorTable
+        factors={factors}
+        profile={profile}
+        errors={{}}
+        onUpdate={updateFactor}
+        onDelete={deleteFactor}
+      />
     </div>
   )
 }

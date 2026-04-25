@@ -1,40 +1,62 @@
 import { useState } from 'react'
-import { Factor, FactorType } from '../../types'
+import { Factor, FactorType, FormulaProfile } from '../../types'
 import { getFactorTypeShortLabel } from '../../utils/factorTypes'
 
 type Props = {
   onSubmit: (factor: Factor) => void
+  profile: FormulaProfile
 }
 
 const factorTypes: FactorType[] = ['S', 'W', 'O', 'T']
 
-const defaultState = {
-  type: 'S' as FactorType,
-  text: '',
-  category: '',
-  significance: 3,
-  impact: 3,
-  probability: 0.5,
+function defaultState(profile: FormulaProfile) {
+  const base = {
+    type: 'S' as FactorType,
+    text: '',
+    category: '',
+    significance: 3,
+    probability: 0.5,
+    impact: 3,
+    customFieldValues: {} as Record<string, number>,
+  }
+  if (profile.customFields) {
+    for (const f of profile.customFields) {
+      base.customFieldValues[f.key] = f.defaultValue ?? (f.min ?? 1)
+    }
+  }
+  return base
 }
 
-export function FactorForm({ onSubmit }: Props) {
-  const [state, setState] = useState(defaultState)
+function needsImpact(profile: FormulaProfile): boolean {
+  if (profile.mode === 'simplified') return true
+  if (profile.mode === 'custom') {
+    return (
+      !!profile.factorExpression?.includes('impact') ||
+      !!profile.interactionExpression?.includes('impact') ||
+      !!profile.customFields?.some(f => f.key === 'impact')
+    )
+  }
+  return false
+}
+
+export function FactorForm({ onSubmit, profile }: Props) {
+  const [state, setState] = useState(() => defaultState(profile))
   const [categoryError, setCategoryError] = useState(false)
   const [textError, setTextError] = useState(false)
 
+  const showImpact = needsImpact(profile)
+  const showProbability = state.type === 'O' || state.type === 'T'
+
+  const customFieldsForType = (profile.customFields ?? []).filter(
+    f => f.key !== 'impact' && (!f.appliesTo || f.appliesTo.includes(state.type))
+  )
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!state.text.trim() || !state.category.trim()) {
-      if (!state.category.trim()) {
-        setCategoryError(true)
-        setTimeout(() => setCategoryError(false), 3000)
-      }
-      if (!state.text.trim()) {
-        setTextError(true)
-        setTimeout(() => setTextError(false), 3000)
-      }
-      return
-    }
+    let hasError = false
+    if (!state.text.trim()) { setTextError(true); setTimeout(() => setTextError(false), 3000); hasError = true }
+    if (!state.category.trim()) { setCategoryError(true); setTimeout(() => setCategoryError(false), 3000); hasError = true }
+    if (hasError) return
 
     const factor: Factor = {
       id: crypto.randomUUID(),
@@ -42,47 +64,43 @@ export function FactorForm({ onSubmit }: Props) {
       text: state.text.trim(),
       category: state.category.trim(),
       significance: Number(state.significance),
-      impact: Number(state.impact),
-      probability:
-        state.type === 'O' || state.type === 'T' ? Number(state.probability) : undefined,
+      probability: showProbability ? Number(state.probability) : undefined,
+      impact: showImpact ? Number(state.impact) : undefined,
+      customFieldValues: Object.keys(state.customFieldValues).length > 0
+        ? state.customFieldValues
+        : undefined,
     }
     onSubmit(factor)
-    setState(defaultState)
+    setState(defaultState(profile))
     setCategoryError(false)
     setTextError(false)
   }
 
-  const update = <K extends keyof typeof state>(key: K, value: any) => {
-    // Ограничение для числовых полей significance/impact: 1-5
+  const clamp = (value: number, min: number, max: number) =>
+    Math.min(max, Math.max(min, value))
+
+  const update = (key: string, value: any) => {
     if (key === 'significance' || key === 'impact') {
-      const numValue = Number(value)
-      if (isNaN(numValue) || numValue < 1) {
-        value = 1
-      } else if (numValue > 5) {
-        value = 5
-      } else {
-        value = Math.round(numValue)
-      }
+      const n = Number(value)
+      value = isNaN(n) ? 1 : Math.round(clamp(n, 1, 5))
     } else if (key === 'probability') {
-      // Ограничение для вероятности: 0-1, до 2 знаков после запятой
-      const numValue = Number(value)
-      if (isNaN(numValue) || numValue < 0) {
-        value = 0
-      } else if (numValue > 1) {
-        value = 1
-      } else {
-        value = Math.round(numValue * 100) / 100
-      }
+      const n = Number(value)
+      value = isNaN(n) ? 0 : Math.round(clamp(n, 0, 1) * 100) / 100
     }
     setState(prev => ({ ...prev, [key]: value }))
-    
-    // Сбрасываем ошибки при вводе
-    if (key === 'category' && value.trim()) {
-      setCategoryError(false)
-    }
-    if (key === 'text' && value.trim()) {
-      setTextError(false)
-    }
+    if (key === 'category' && String(value).trim()) setCategoryError(false)
+    if (key === 'text' && String(value).trim()) setTextError(false)
+  }
+
+  const updateCustom = (key: string, value: string, field: { min?: number; max?: number }) => {
+    let n = Number(value)
+    if (isNaN(n)) n = field.min ?? 1
+    if (field.min !== undefined && n < field.min) n = field.min
+    if (field.max !== undefined && n > field.max) n = field.max
+    setState(prev => ({
+      ...prev,
+      customFieldValues: { ...prev.customFieldValues, [key]: n },
+    }))
   }
 
   return (
@@ -90,14 +108,9 @@ export function FactorForm({ onSubmit }: Props) {
       <div className="form-row">
         <label>
           Тип
-          <select
-            value={state.type}
-            onChange={e => update('type', e.target.value as FactorType)}
-          >
-            {factorTypes.map(type => (
-              <option key={type} value={type}>
-                {getFactorTypeShortLabel(type)}
-              </option>
+          <select value={state.type} onChange={e => update('type', e.target.value)}>
+            {factorTypes.map(t => (
+              <option key={t} value={t}>{getFactorTypeShortLabel(t)}</option>
             ))}
           </select>
         </label>
@@ -108,72 +121,57 @@ export function FactorForm({ onSubmit }: Props) {
             type="text"
             value={state.category}
             onChange={e => update('category', e.target.value)}
-            onBlur={() => {
-              if (!state.category.trim()) {
-                setCategoryError(true)
-              }
-            }}
+            onBlur={() => { if (!state.category.trim()) setCategoryError(true) }}
             placeholder="Категория"
             className={categoryError ? 'error-input' : ''}
-            required
           />
-          {categoryError && (
-            <span className="error-message">⚠️ Необходимо ввести категорию</span>
-          )}
+          {categoryError && <span className="error-message">⚠️ Необходимо ввести категорию</span>}
         </label>
 
         <label>
           Значимость (1-5)
           <input
-            type="number"
-            min={1}
-            max={5}
+            type="number" min={1} max={5}
             value={state.significance}
             onChange={e => update('significance', e.target.value)}
-            onKeyDown={(e) => {
-              // Предотвращаем ввод значений больше 5
-              if (e.key >= '0' && e.key <= '9') {
-                const newValue = Number(String(state.significance) + e.key)
-                if (newValue > 5) {
-                  e.preventDefault()
-                }
-              }
-            }}
           />
         </label>
 
-        <label>
-          Влияние (1-5)
-          <input
-            type="number"
-            min={1}
-            max={5}
-            value={state.impact}
-            onChange={e => update('impact', e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key >= '0' && e.key <= '9') {
-                const newValue = Number(String(state.impact) + e.key)
-                if (newValue > 5) {
-                  e.preventDefault()
-                }
-              }
-            }}
-          />
-        </label>
+        {showImpact && (
+          <label>
+            Влияние (1-5)
+            <input
+              type="number" min={1} max={5}
+              value={state.impact}
+              onChange={e => update('impact', e.target.value)}
+            />
+          </label>
+        )}
 
-        {(state.type === 'O' || state.type === 'T') && (
+        {showProbability && (
           <label>
             Вероятность (0-1)
             <input
-              type="number"
-              min={0}
-              max={1}
-              step={0.01}
+              type="number" min={0} max={1} step={0.01}
               value={state.probability}
               onChange={e => update('probability', e.target.value)}
             />
           </label>
         )}
+
+        {customFieldsForType.map(field => (
+          <label key={field.key}>
+            {field.label}
+            <input
+              type="number"
+              min={field.min}
+              max={field.max}
+              step={field.step ?? 1}
+              value={state.customFieldValues[field.key] ?? (field.defaultValue ?? field.min ?? 1)}
+              onChange={e => updateCustom(field.key, e.target.value, field)}
+            />
+          </label>
+        ))}
       </div>
 
       <div className="form-row">
@@ -183,22 +181,13 @@ export function FactorForm({ onSubmit }: Props) {
             type="text"
             value={state.text}
             onChange={e => update('text', e.target.value)}
-            onBlur={() => {
-              if (!state.text.trim()) {
-                setTextError(true)
-              }
-            }}
+            onBlur={() => { if (!state.text.trim()) setTextError(true) }}
             placeholder="Опишите фактор"
             className={textError ? 'error-input' : ''}
-            required
           />
-          {textError && (
-            <span className="error-message">⚠️ Необходимо ввести текст фактора</span>
-          )}
+          {textError && <span className="error-message">⚠️ Необходимо ввести текст фактора</span>}
         </label>
-        <button type="submit" className="primary-btn">
-          Добавить
-        </button>
+        <button type="submit" className="primary-btn">Добавить</button>
       </div>
     </form>
   )

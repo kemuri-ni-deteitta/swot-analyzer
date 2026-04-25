@@ -1,0 +1,206 @@
+.calc-hub {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.calc-hub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.calc-hub-header h2 {
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.calc-hub-hint {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+.calc-hub-create {
+  padding: var(--spacing-lg);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.calc-hub-create h3 {
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.calc-create-row {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.calc-create-row label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 200px;
+}
+
+.calc-create-row select {
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: var(--control-height);
+}
+
+.calc-hub-empty {
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.calc-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.calc-card {
+  padding: var(--spacing-lg);
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  position: relative;
+}
+
+.calc-card:hover {
+  border-color: var(--accent-color);
+  background: var(--bg-hover);
+}
+
+.calc-card.active {
+  border-color: var(--accent-color);
+  background: var(--accent-bg, rgba(59, 130, 246, 0.05));
+}
+
+.calc-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calc-name {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+.calc-badge {
+  background: var(--accent-color);
+  color: #fff;
+  font-size: var(--font-size-xs);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.calc-meta {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.calc-stats {
+  display: flex;
+  gap: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.calc-dates {
+  display: flex;
+  gap: var(--spacing-md);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  flex-wrap: wrap;
+}
+
+.calc-card-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.ghost-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.ghost-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.danger-btn {
+  border-color: var(--error-color, #ef4444);
+  color: var(--error-color, #ef4444);
+}
+
+.danger-btn:hover {
+  background: var(--error-bg, rgba(239, 68, 68, 0.08));
+  border-color: var(--error-color, #ef4444);
+  color: var(--error-color, #ef4444);
+}
+
+.calc-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calc-confirm-box {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  max-width: 400px;
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.calc-confirm-box p {
+  margin: 0;
+  font-size: var(--font-size-md, 1rem);
+}
+
+.calc-confirm-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+}

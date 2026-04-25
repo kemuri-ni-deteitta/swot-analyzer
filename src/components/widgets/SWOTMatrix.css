@@ -7,6 +7,25 @@
   font-size: var(--font-size-lg);
 }
 
+.quadrant-interaction-totals {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-md);
+}
+
+.qi-item {
+  padding: 2px var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.qi-item.so { background: rgba(59,130,246,0.12); color: #3b82f6; }
+.qi-item.wo { background: rgba(245,158,11,0.12); color: #d97706; }
+.qi-item.st { background: rgba(239,68,68,0.12); color: #ef4444; }
+.qi-item.wt { background: rgba(107,114,128,0.12); color: #6b7280; }
+
 .matrix-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

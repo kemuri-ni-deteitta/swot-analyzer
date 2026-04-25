@@ -1,0 +1,390 @@
+.formula-editor-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.formula-editor-modal {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  width: min(1200px, 96vw);
+  max-height: 96vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.formula-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+.formula-editor-header h2 {
+  margin: 0;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+}
+
+.close-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.formula-editor-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.formula-editor-sidebar {
+  width: 260px;
+  border-right: 1px solid var(--border-color);
+  padding: var(--spacing-md);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+.sidebar-section h4 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.profile-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  margin-bottom: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  transition: all 0.2s;
+}
+
+.profile-btn:hover {
+  border-color: var(--accent-color);
+}
+
+.profile-btn.selected {
+  border-color: var(--accent-color);
+  background: var(--accent-bg, rgba(59, 130, 246, 0.08));
+  font-weight: 600;
+}
+
+.new-profile-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  transition: all 0.2s;
+}
+
+.new-profile-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.formula-editor-main {
+  flex: 1;
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+}
+
+.profile-view h3 {
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.profile-description {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.6;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.profile-detail-item {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.detail-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 80px;
+}
+
+.formula-display {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.formula-display code {
+  font-family: monospace;
+  font-size: 1rem;
+  color: var(--accent-color);
+  background: var(--bg-primary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+}
+
+.formula-vars {
+  margin: 0;
+  padding-left: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.formula-vars li {
+  margin-bottom: 2px;
+}
+
+.custom-profile-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.field-group label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.field-hint {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.field-group input,
+.field-group textarea,
+.field-group select {
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.field-group input.error-input,
+.field-group textarea.error-input {
+  border-color: var(--error-color);
+}
+
+.error-msg {
+  color: var(--error-color);
+  font-size: var(--font-size-xs);
+}
+
+.custom-fields-section {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+}
+
+.custom-fields-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.custom-fields-header h4 {
+  margin: 0;
+}
+
+.custom-field-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  align-items: flex-end;
+  padding: var(--spacing-sm) 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.custom-field-row label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 100px;
+}
+
+.custom-field-row label:nth-child(3),
+.custom-field-row label:nth-child(4) {
+  flex: 0 0 80px;
+  min-width: 80px;
+}
+
+.custom-field-row label:nth-child(5) {
+  flex: 1;
+  min-width: 140px;
+}
+
+.custom-field-row > .ghost-btn {
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+.type-checkboxes {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--font-size-xs);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.small-btn {
+  font-size: var(--font-size-xs);
+  padding: 2px var(--spacing-sm);
+}
+
+.editor-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-sm);
+}
+
+.ghost-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  transition: all 0.2s;
+}
+
+.ghost-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.danger-btn {
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+.danger-btn:hover {
+  background: var(--error-bg);
+}
+
+.formula-editor-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+.active-formula-info {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.footer-actions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.formula-confirm-modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+}
+
+.formula-confirm-box {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.formula-confirm-box h3 {
+  margin: 0;
+}
+
+.formula-confirm-box p {
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.formula-confirm-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+}

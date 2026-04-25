@@ -33,6 +33,14 @@
   font-size: var(--font-size-sm);
 }
 
+.calc-name-badge {
+  background: var(--accent-color);
+  color: #fff;
+  font-size: var(--font-size-xs);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
 .save-status {
   color: var(--success-color);
   font-size: var(--font-size-xs);
